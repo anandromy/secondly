@@ -1,10 +1,8 @@
-import { SignIn } from "@/components/ui/sign-in"
+import { SignInForm } from "@/components/auth/signinForm"
 
 const SignInPage = () => {
     return(
-        <div className="min-h-screen w-full flex items-center justify-center">
-            <SignIn />
-        </div>
+        <SignInForm />
     )
 }
 
