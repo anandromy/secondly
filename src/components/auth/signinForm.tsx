@@ -16,7 +16,7 @@ import { z } from "zod";
 import { SigninSchema } from "@/schemas";
 import { Button } from "@/components/ui/button";
 import { FormSuccess } from "@/components/form-success";
-import { login } from "@/actions/login";
+import { signin } from "@/actions/signin";
 import { useState, useTransition } from "react";
 import { FormError } from "../form-error";
 
@@ -24,7 +24,7 @@ export function SignInForm() {
   const [ isPending, startTransition ] = useTransition()
 
   const [ error, setError ] = useState<string | undefined>("")
-  const [ success, setSuccess ] = useState<string | undefined>("")
+  // const [ success, setSuccess ] = useState<string | undefined>("")
 
   const form = useForm<z.infer<typeof SigninSchema>>({
     resolver: zodResolver(SigninSchema),
@@ -37,14 +37,14 @@ export function SignInForm() {
   const onSubmit = (values: z.infer<typeof SigninSchema>) => {
     // Cleaning error and success messages everytime user hits submit
     setError("")
-    setSuccess("")
+    // setSuccess("")
 
 
     startTransition(() => {
-      login(values)
+      signin(values)
         .then((data) => {
-          setError(data.error)
-          setSuccess(data.success)
+          setError(data?.error)
+          // setSuccess(data.success)
         })
     })
   }
@@ -99,7 +99,7 @@ export function SignInForm() {
             />
           </div>
           <FormError message={error} />
-          <FormSuccess message={success} />
+          {/* <FormSuccess message={success} /> */}
           <Button disabled={isPending} type="submit" className="w-full">
             Sign in
           </Button>
