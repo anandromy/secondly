@@ -33,10 +33,10 @@ model Account {
 }
 
 model User {
-  id String @id @default(uuid())
+  id String @id @default(cuid())
   name String?
-  email String?
-  emailVerfied String?
+  email String? @unique
+  emailVerfied DateTime?
   image String?
   password String?
   accounts Account[]
