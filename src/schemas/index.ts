@@ -10,3 +10,14 @@ export const SigninSchema = z.object({
         message: "Password is required"
     })
 })
+
+export const SignupSchema = z.object({
+    email: z.string({
+        message: "Email is required"
+    }).email({
+        message: "Enter a valid email"
+    }),
+    password: z.string({
+        message: "Password is required"
+    }).min(8, { message: "Password must be of atleast 8 characters"})
+})
