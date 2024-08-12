@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs"
 
 export default {
   providers: [
+    Google,
     Credentials({
       async authorize(credentials, request) {
         const validatedFields = SigninSchema.safeParse(credentials)
