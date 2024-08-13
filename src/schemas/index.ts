@@ -22,3 +22,12 @@ export const SignupSchema = z.object({
     }).min(6, { message: "Password must be of atleast 8 characters"}),
     name: z.string().min(1, "Name is required")
 })
+
+export const CreateSessionSchema = z.object({
+    startTime: z.date()
+})
+
+export const EndSessionSchema = z.object({
+    sessionId: z.string(),
+    endTime: z.date()
+})

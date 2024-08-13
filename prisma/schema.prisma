@@ -40,10 +40,21 @@ model User {
   image String?
   password String?
   role UserRole @default(USER)
+
   accounts Account[]
+  sessions Session[]
 }
 
 enum UserRole {
   ADMIN
   USER
+}
+
+model Session {
+  id String @id @default(uuid())
+  startTime DateTime
+  endTime DateTime?
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
 }
