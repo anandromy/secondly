@@ -13,7 +13,7 @@ export default auth((req) => {
     const isAuthRoute = authRoutes.includes(nextUrl.pathname)
 
     if(nextUrl.pathname == "/" && isLoggedIn) {
-        return Response.redirect(new URL("/overview", nextUrl))
+        return Response.redirect(new URL("/focus", nextUrl))
     }
 
     if(isApiAuthRoute) {

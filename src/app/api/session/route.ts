@@ -42,20 +42,12 @@ export async function GET (req: Request) {
 }
 
 export async function POST (req: Request) {
-    const { session } = await req.json()
-    const { data, success } = CreateSessionSchema.safeParse(session)
     const authSession = await auth()
     if(!authSession || !authSession.user) {
         return Response.json({
             success: false,
             message: "Not Authenticated"
         }, { status: 401 })
-    }
-    if(!success) {
-        return Response.json({
-            success: false,
-            message: "Invalid session"
-        }, { status: 400 })
     }
     try {
         const userExits = await db.user.findUnique({
@@ -68,6 +60,26 @@ export async function POST (req: Request) {
                 success: false,
                 message: "User not found"
             }, { status: 404 })
+        }
+        const session = await req.json()
+        const { data, success, error } = CreateSessionSchema.safeParse(session)
+        if(!success) {
+            console.log("ERROR IN INVALID SESSION", error.message)
+            return Response.json({
+                success: false,
+                message: "Invalid session"
+            }, { status: 400 })
+        }
+        const isActive = await db.session.findMany({
+            where: {
+                endTime: null
+            }
+        })
+        if(isActive.length > 0) {
+            return Response.json({
+                success: false,
+                message: "A session is already active"
+            }, { status: 400 })
         }
         const newSession = await db.session.create({
             data: {
@@ -91,7 +103,7 @@ export async function POST (req: Request) {
 }
 
 export async function PUT (req: Request) {
-    const { session } = await req.json()
+    const session = await req.json()
     const { data, success } = EndSessionSchema.safeParse(session)
     const authSession = await auth()
     if(!authSession || !authSession.user) {
@@ -111,7 +123,7 @@ export async function PUT (req: Request) {
         await db.session.update({
             where: {
                 id: data.sessionId,
-                userId: authSession.user.id
+                endTime: null
             }, 
             data: {
                 endTime: data.endTime
@@ -131,7 +143,7 @@ export async function PUT (req: Request) {
 }
 
 export async function DELETE (req:Request) {
-    const { sessionId } = await req.json()
+    const requestBody = await req.json()
     const authSession = await auth()
     if(!authSession || !authSession.user) {
         return Response.json({
@@ -142,8 +154,7 @@ export async function DELETE (req:Request) {
     try {
         await db.session.delete({
             where: {
-                id: sessionId,
-                userId: authSession.user.id
+                id: requestBody.sessionId
             }
         })
         return Response.json({

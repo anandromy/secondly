@@ -24,10 +24,10 @@ export const SignupSchema = z.object({
 })
 
 export const CreateSessionSchema = z.object({
-    startTime: z.date()
+    startTime: z.coerce.date()
 })
 
 export const EndSessionSchema = z.object({
     sessionId: z.string(),
-    endTime: z.date()
+    endTime: z.coerce.date()
 })
