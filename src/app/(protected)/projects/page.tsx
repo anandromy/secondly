@@ -7,7 +7,8 @@ import { useEffect, useState } from "react"
 
 const ProjectsPage = () => {
     const [ projects, setProjects ] = useState<any>()
-    const [ isEditing,  setIsEditing ] = useState<boolean>(false)
+    const [ isEditing,  setIsEditing ] = useState<string| false>(false)
+    const [ isAdding, setIsAdding ] = useState<boolean>()
 
     const fetchProjects = async () => {
         const res = await fetch("/api/project")
@@ -17,7 +18,7 @@ const ProjectsPage = () => {
 
     useEffect(() => {
         fetchProjects()
-    }, [])
+    }, [isEditing, isAdding])
 
     return(
         <div className="w-full space-y-3 max-w-[600px] ml-20">
@@ -27,14 +28,14 @@ const ProjectsPage = () => {
                     // TODO: ADD TYPES
                     // @ts-ignore
                     projects.map((project, index) => (
-                        <Project key={index} defaultValue={project.name} id={project.id} />
+                        <Project key={index} defaultValue={project.name} id={project.id} setIsEditing={setIsEditing} isEditing={isEditing} />
                     ))
                 )
             }
-            <Input placeholder="Add new project" className={`border-none hover:bg-muted rounded-md cursor-pointer ${isEditing && "hidden"}`} onClick={() => setIsEditing(true)} />
+            <Input placeholder="Add new project" className={`border-none hover:bg-muted rounded-md cursor-pointer ${isAdding && "hidden"}`} onClick={() => setIsAdding(true)} />
             {
-                isEditing && (
-                    <EditProject setIsEditing={setIsEditing} />
+                isAdding && (
+                    <EditProject setIsAdding={setIsAdding} />
                 )
             }
         </div>

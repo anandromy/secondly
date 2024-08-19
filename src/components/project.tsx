@@ -1,22 +1,22 @@
 "use client"
 
-import { useState } from "react"
 import { EditProject } from "./edit-project-form"
 type Props = {
     defaultValue: string,
-    id: string
+    id: string,
+    setIsEditing: (x: string | false) => void,
+    isEditing?: string | false,
 }
 
-export const Project = ({ defaultValue, id }: Props) => {
-    const [ isEditing, setIsEditing ] = useState<boolean>(false)
+export const Project = ({ defaultValue, id, setIsEditing, isEditing }: Props) => {
     return(
         <div>
-            <p className={`hover:bg-muted rounded-md cursor-pointer py-2 px-3 transition-all ${isEditing && "hidden"}`}
-                onClick={() => setIsEditing(true)}
+            <p className={`hover:bg-muted rounded-md cursor-pointer py-2 px-3 transition-all ${isEditing === id && "hidden"}`}
+                onClick={() => setIsEditing(id)}
             >
                 {defaultValue}
             </p>
-            {isEditing && <EditProject setIsEditing={setIsEditing} name={defaultValue} />}
+            {isEditing === id && <EditProject name={defaultValue} id={id} setIsEditing={setIsEditing} />}
         </div>
     )
 }
