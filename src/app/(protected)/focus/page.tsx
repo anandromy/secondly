@@ -1,10 +1,11 @@
 "use client"
 
+import { ElapsingTime } from "@/components/focus-timer/elapsing_time"
 import { Button } from "@/components/ui/button"
 import { PauseIcon, PlayIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 
-type session = {
+export type session = {
     startTime?: Date
     endTime?: Date
 }
@@ -59,7 +60,7 @@ const FocusPage = () => {
                             <PlayIcon />
                         }
                     </Button>
-                    <p>Time</p>
+                    <ElapsingTime sessions={session} />
                 </div>
                 <div className="space-x-3">
                     <Button variant="outline" onClick={async () => {
