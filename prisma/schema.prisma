@@ -75,10 +75,21 @@ model Project {
 model Task  {
   id String @id @default(uuid())
   name String
+  description String
+  deadline DateTime
+  status Status
   sessions Session[]
 
   user User @relation(fields: [userId], references: [id])
   userId String
   project Project @relation(fields: [projectId], references: [id])
   projectId String
+}
+
+// TODO: GIVE THE USER AND OPTION TO ADD THE TASK STATUS OF THEIR CHOICE, ON OTHER DATES ALSO
+
+enum Status {
+  todo
+  backlog
+  done
 }

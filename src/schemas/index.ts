@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { date, z } from "zod"
 
 export const SigninSchema = z.object({
     email: z.string({
@@ -24,10 +24,23 @@ export const SignupSchema = z.object({
 })
 
 export const CreateSessionSchema = z.object({
-    startTime: z.coerce.date()
+    startTime: z.coerce.date(),
+    taskId: z.string()
 })
 
 export const EndSessionSchema = z.object({
     sessionId: z.string(),
     endTime: z.coerce.date()
+})
+
+export const createTaskSchema = z.object({
+    projectId: z.string(),
+    status: z.enum(["todo", "done", "backlog"]),
+    name: z.string(),
+    description: z.string(),
+    deadline: z.coerce.date()
+})
+
+export const updateTaskSchema = createTaskSchema.extend({
+    taskId: z.string()
 })
