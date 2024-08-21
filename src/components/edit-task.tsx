@@ -84,35 +84,34 @@ export const EditTask = ({ isAdding, setIsAdding, isEditing, setIsEditing, task 
     }
 
     return(
-        <Card>
-            <CardContent className="py-4">
-                <form className="flex flex-col gap-4">
-                    <div className="flex bg-background rounded-md items-center px-3 gap-1">
-                        <Select name="projectId" onValueChange={(value) => setProjectId(value)}>
-                            {/* TODO: LEARN THIS CLASS TO MAKE INPUT RINGS DISAAPEAR ON FOCUS */}
-                            {/* <SelectTrigger className="max-w-[35px] focus:ring-none focus:ring-0 focus:ring-offset-0"> */}
-                            <SelectTrigger className="text-nowrap text-2xl w-min">
-                                {/* @ts-ignore */}
-                            <SelectValue placeholder={ task?.id ? task?.project?.name : projects.length > 0 && projects[0].name.split(" ")[0]} />
-                            </SelectTrigger>
-                            <SelectContent className="py-2 px-3">
-                            { projects.length > 0 &&
-                                projects.map((project) => (
-                                    <SelectItem className="cursor-pointer rounded-md text-start" key={project.id} value={project.id}>{project.name}</SelectItem>
-                                ))
-                            }
-                            </SelectContent>
-                        </Select>
-                        <input defaultValue={task && task?.name} className="flex h-16 w-full rounded-md bg-background px-3 py-2 focus:outline-none" onChange={(e) => setTaskName(e.target.value)} />
-                    </div>
-                    <Separator className="my-4" />
-                    <div className="flex flex-col gap-1.5">
-                        <label className="">Description</label>
-                        <textarea defaultValue={task && task.description} className="flex h-16 w-full rounded-md bg-background px-3 py-2 focus:outline-none" onChange={(e) => setDescription(e.target.value)} />
-                    </div>
-                </form>
-            </CardContent>
-            <CardFooter className="flex justify-between items-center gap-8">
+        <div className="border rounded-lg py-8">
+            <form className="flex flex-col gap-4">
+                <div className="flex bg-background rounded-md items-center px-3 gap-1 mx-4">
+                    <Select name="projectId" onValueChange={(value) => setProjectId(value)}>
+                        {/* TODO: LEARN THIS CLASS TO MAKE INPUT RINGS DISAAPEAR ON FOCUS */}
+                        {/* <SelectTrigger className="max-w-[35px] focus:ring-none focus:ring-0 focus:ring-offset-0"> */}
+                        <SelectTrigger className="text-nowrap text-xl w-[60px]">
+                            {/* @ts-ignore */}
+                        <SelectValue placeholder={ task?.id ? task?.project?.name.split(" ")[0] : projects.length > 0 && projects[0].name.split(" ")[0]} />
+                        </SelectTrigger>
+                        <SelectContent className="py-2 px-3">
+                        { projects.length > 0 &&
+                            projects.map((project) => (
+                                <SelectItem className="cursor-pointer rounded-md text-start" key={project.id} value={project.id}>{project.name}</SelectItem>
+                            ))
+                        }
+                        </SelectContent>
+                    </Select>
+                    <input defaultValue={task && task?.name} placeholder="Enter task name" className="flex h-16 w-full rounded-md bg-background px-3 py-2 focus:outline-none" onChange={(e) => setTaskName(e.target.value)} />
+                </div>
+                <Separator className="my-4" />
+                <div className="flex flex-col gap-1.5 mx-4">
+                    <label className="ml-3">Description</label>
+                    <textarea placeholder="Describe your task" defaultValue={task && task.description} className="flex w-full rounded-md bg-background px-3 py-2 focus:outline-none" onChange={(e) => setDescription(e.target.value)} />
+                </div>
+                <Separator className="mb-6" />
+            </form>
+            <div className="flex justify-between items-center gap-8 mx-4">
                 <div className="flex items-center gap-3 flex-1">
                     <Select onValueChange={(value: "todo" | "done" | "backlog") => setStatus(value)}>
                         <SelectTrigger className="max-w-[130px]">
@@ -157,10 +156,10 @@ export const EditTask = ({ isAdding, setIsAdding, isEditing, setIsEditing, task 
                         setIsEditing && setIsEditing(false)
                     }}>Cancel</Button>
                 </div>
-            </CardFooter>
+            </div>
             {task && <Button variant="destructive" className="ml-6 mb-4"
                 onClick={handleDelete}
             >Delete</Button>}
-        </Card>
+        </div>
     )
 }

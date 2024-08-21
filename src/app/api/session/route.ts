@@ -84,7 +84,8 @@ export async function POST (req: Request) {
         const newSession = await db.session.create({
             data: {
                 userId: userExits.id,
-                ...data
+                startTime: data.startTime,
+                taskId: data.taskId
             }
         })
         return Response.json({

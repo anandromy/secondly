@@ -74,3 +74,15 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+::-webkit-scrollbar {
+  background: hsl(0 0% 15%);
+  width: 8px;
+  margin-block: .5em;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: hsl(240 5% 45%);
+}
