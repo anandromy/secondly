@@ -38,7 +38,7 @@ export const createTaskSchema = z.object({
     status: z.enum(["todo", "done", "backlog"]),
     name: z.string(),
     description: z.string(),
-    deadline: z.coerce.date()
+    deadline: z.date()
 })
 
 export const updateTaskSchema = createTaskSchema.extend({

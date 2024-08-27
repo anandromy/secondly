@@ -83,11 +83,12 @@ export async function PUT(req: Request) {
         }, { status: 401 })
     }
     const requestBody = await req.json()
-    const { data, success } = updateTaskSchema.safeParse(requestBody)
+    const { data, success, error } = updateTaskSchema.safeParse(requestBody)
     if(!success) {
         return Response.json({
             message: "Invalid task type",
-            success: false
+            success: false,
+            error
         }, { status: 400 })
     }
 

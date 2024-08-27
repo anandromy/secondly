@@ -2,6 +2,8 @@
 
 import { EditTask } from "@/components/edit-task"
 import { Task } from "@/components/task"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 import { Task as TaskType } from "@prisma/client"
 import { PlusIcon } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -22,7 +24,17 @@ const TasksPage = () => {
 
     return (
         <div className="w-full space-y-3 max-w-[600px] ml-20">
-            <h1 className="text-3xl font-bold mb-10 px-3">Tasks</h1>
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <h1 className="text-xl text-muted-foreground font-bold cursor-pointer hover:text-foreground">Tasks</h1>
+                    <h1 className="text-xl text-muted-foreground font-bold cursor-pointer hover:text-foreground">Automation</h1>
+                    <h1 className="text-xl text-muted-foreground font-bold cursor-pointer hover:text-foreground">Templates</h1>
+                </div>
+                <Button variant="ghost">
+                    Filter
+                </Button>
+            </div>
+            <Separator className="my-4" />
             {
                 tasks.map((task) => (
                     <Task key={task.id} task={task} isEditing={isEditing} setIsEditing={setIsEditing} />

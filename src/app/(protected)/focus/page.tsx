@@ -40,8 +40,6 @@ const FocusPage = () => {
         fetchTasks()
     }, [])
 
-    console.log("SESSIONS: ", session)
-
     const handleClick = async () => {
         if(!session){
             const response = await fetch("/api/session", {

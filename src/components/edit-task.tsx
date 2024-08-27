@@ -2,13 +2,12 @@
 
 import { Project, Task as TaskType } from "@prisma/client"
 import { useEffect, useState } from "react"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Select, SelectTrigger, SelectContent, SelectValue, SelectItem } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { CalendarIcon } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { format } from "date-fns"
+import { format, isAfter, isBefore } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import { createTaskSchema, updateTaskSchema } from "@/schemas"
 
@@ -39,36 +38,39 @@ export const EditTask = ({ isAdding, setIsAdding, isEditing, setIsEditing, task 
     }, [isAdding, isEditing])
 
     const handleSubmit = async () => {
+        
         if(!task?.id) {
-            const userInput = { projectId, description, deadline, name: taskName, status }
+            const userInput = { projectId, description, deadline: deadline, name: taskName, status }
             const { data, success } = createTaskSchema.safeParse(userInput)
             if(!success) {
                 // TODO: BETTER ERROR HANDLING~ error messages in the form
                 console.log("Some user input is wrong, please look into it")
-                return
+            } else {
+                const res = await fetch("/api/task", {
+                    method: "POST",
+                    body: JSON.stringify(data)
+                })
+                const apiResponseData = await res.json()
+                setIsAdding && setIsAdding(false)
             }
-            const res = await fetch("/api/task", {
-                method: "POST",
-                body: JSON.stringify(data)
-            })
-
-            const apiResponseData = await res.json()
-            console.log(apiResponseData)
-            setIsAdding && setIsAdding(false)
         } else {
             const userInput = { description, deadline, name: taskName, status, taskId: task.id, projectId }
-            const { data, success } = updateTaskSchema.safeParse(userInput)
+            const { data, success, error } = updateTaskSchema.safeParse(userInput)
+            console.log("JSON.stringify: ", JSON.stringify(data))
             if(!success) {
-                console.error("Some invalid input. Please check the user input")
-                return
+                console.error("Some invalid input. Please check the user input: ", error)
+            } else {
+                const res = await fetch("/api/task", {
+                    method: "PUT",
+                    body: JSON.stringify(data)
+                })
+                const apiResponseData = await res.json()
+                // CURRENT TODO
+                console.log("utc deadline: ", format(deadline, "P"), "format-utc-tody: ", format(new  Date(), "P"))
+                console.log(isBefore(format(deadline, "P"), format(new Date, "P")))
+                // setIsEditing && setIsEditing(false)
             }
-            const res = await fetch("/api/task", {
-                method: "PUT",
-                body: JSON.stringify(data)
-            })
-            const apiResponseData = await res.json()
-            console.log(apiResponseData)
-            setIsEditing && setIsEditing(false)
+            
         }
     }
 
@@ -151,9 +153,10 @@ export const EditTask = ({ isAdding, setIsAdding, isEditing, setIsEditing, task 
                         handleSubmit()
                     }}>Submit</Button>
                     <Button variant="outline" onClick={(e) => {
+                        console.log("date:", deadline?.getDate(), " month:", deadline?.getMonth(), " year:", deadline?.getFullYear())
                         e.preventDefault()
-                        setIsAdding && setIsAdding(false)
-                        setIsEditing && setIsEditing(false)
+                        // setIsAdding && setIsAdding(false)
+                        // setIsEditing && setIsEditing(false)
                     }}>Cancel</Button>
                 </div>
             </div>
