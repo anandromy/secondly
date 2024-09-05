@@ -4,27 +4,23 @@ import emojiRegex from "emoji-regex"
 
 const regex = emojiRegex()
 
-type Props = {
-    userId: string
-}
 
 type AddProjectProps = {
     name: string
     icon: string
-    userId: string
 }
 
-export const getProjects = async ({ userId }: Props) => {
+export const getProjects = async () => {
     const projects = await db.project.findMany({
         where: {
-            userId
+            userId: "cm014wqjp00002sqj2eoep8zu"
         }
     })
 
     return projects
 }
 
-export const addProject = async ({ name, icon, userId }: AddProjectProps): Promise<ActionResponse>=> {
+export const addProject = async ({ name, icon }: AddProjectProps): Promise<ActionResponse>=> {
     const emojis = icon.match(regex)
     if (emojis?.length !== 1) {
         return {
@@ -34,7 +30,7 @@ export const addProject = async ({ name, icon, userId }: AddProjectProps): Promi
     }
     await db.project.create({
         data: {
-            userId: userId,
+            userId: "cm014wqjp00002sqj2eoep8zu",
             name: name,
             icon: emojis[0]
         }
