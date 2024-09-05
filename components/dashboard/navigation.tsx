@@ -9,7 +9,7 @@ export const Navigation = () => {
                 <ul className="space-y-2">
                     {
                         links.map((item) => (
-                            <Navlink name={item.name} icon={React.createElement(item.icon, { className:"h-4 w-4" })}/>
+                            <Navlink key={item.name} name={item.name} icon={React.createElement(item.icon, { className:"h-4 w-4" })}/>
                         ))
                     }
                 </ul>

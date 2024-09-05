@@ -32,7 +32,7 @@ const ProjectsPage = async () => {
                 <div className="space-y-1">
                     {
                         projects.map((item) => (
-                            <ProjectTab name={item.name} icon={item.icon} />
+                            <ProjectTab key={item.name} name={item.name} icon={item.icon} />
                         ))
                     }
                 </div>
