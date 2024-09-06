@@ -1,7 +1,7 @@
-const ByePage = () => {
+const TaskPage = () => {
     return(
         <p>Task, Paige!</p>
     )
 }
 
-export default ByePage
+export default TaskPage
