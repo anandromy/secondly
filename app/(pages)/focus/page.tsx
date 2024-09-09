@@ -1,6 +1,6 @@
 const HelloPage = () => {
     return (
-        <div>
+        <div className="py-6">
             Focus, Paige!
         </div>
     )
