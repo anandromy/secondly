@@ -40,6 +40,7 @@ export async function POST(req: Request) {
             success: true
         }, { status: 201 })
     } catch (error) {
+        console.log("Error in adding task: ", error)
         return Response.json({
             message: "Some error occured while adding task",
             success: false
