@@ -39,3 +39,23 @@ export async function POST(req: Request) {
         }, { status: 500 })
     }
 }
+
+export async function GET(req: Request) {
+    try {
+        const projects = await db.project.findMany({
+            where: {
+                userId: "cm014wqjp00002sqj2eoep8zu"
+            }
+        })
+        return Response.json({
+            projects,
+            success: true
+        }, { status: 200 })
+    } catch (error) {
+        console.error("Error in fetching projects: ", error)
+        return Response.json({
+            message: "Error while fetching projects",
+            success: false
+        }, { status: 500 })
+    }
+}
