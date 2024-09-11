@@ -38,10 +38,12 @@ export const columns: ColumnDef<Task>[] = [
         cell: (info) => {
             const date = info.getValue().toDateString()
             const time = info.getValue().toLocaleTimeString()
+            const [hours, minutes, seconds ] = time.split(":")
+
             return (
-                <div className="space-x-3">
-                    <span>{date}</span>
-                    <span>{time}</span>
+                <div className="space-x-3 flex items-center">
+                    <p className="w-40">{date}</p>
+                    <span>{`${hours.padStart(2, "0")}: ${minutes.padStart(2, "0")}: ${seconds.padStart(2, "0")}`}</span>
                 </div>
             )
         }
