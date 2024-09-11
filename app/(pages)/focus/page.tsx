@@ -1,3 +1,4 @@
+import { getActiveSession } from "@/app/actions/focus/getActiveSession"
 import { getProjects } from "@/app/actions/project"
 import { getTasks } from "@/app/actions/task"
 import { SessionCard } from "@/components/focus/session/sessionCard"
@@ -5,6 +6,8 @@ import { SessionCard } from "@/components/focus/session/sessionCard"
 const FocusPage = async () => {
     const projects = await getProjects()
     const tasks = await getTasks()
+
+    const activeSession = await getActiveSession()
 
     if (projects.length === 0 && tasks.length === 0) {
         return (
@@ -16,7 +19,7 @@ const FocusPage = async () => {
 
     return (
         <div className="py-6">
-            <SessionCard />
+            <SessionCard activeSession={activeSession} />
         </div>
     )
 }
