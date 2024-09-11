@@ -67,7 +67,7 @@ export const TaskSelector = ({ setSelectedProjectId, setSelectedTaskId }: Props)
             }
         }
         fetchProjects()
-    }, [])
+    }, [selectedTask])
 
     return(
         <div className="space-y-3">
