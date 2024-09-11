@@ -13,6 +13,7 @@ export const getTasks = async () => {
             description: true,
             Project: {
                 select: {
+                    id: true,
                     name: true,
                     icon: true
                 }

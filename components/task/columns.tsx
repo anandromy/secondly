@@ -4,13 +4,14 @@ import { $Enums } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { DataTableRowActions } from "./row-actions"
 
-type Task = {
+export type Task = {
     id: string,
     name: string,
     deadline: Date,
     status: $Enums.Status,
     description: string,
     Project: {
+        id: string,
         name: string,
         icon: string
     }
