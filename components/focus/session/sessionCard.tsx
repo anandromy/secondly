@@ -41,7 +41,7 @@ export const SessionCard = ({ activeSession }: Props) => {
     }
 
     return(
-        <div className="max-w-xl rounded-md md:ml-40 space-y-4">
+        <div className="max-w-xl rounded-md space-y-4 flex-1">
             {
                 session? (
                     <Timer session={session} />

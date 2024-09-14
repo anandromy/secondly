@@ -1,6 +1,7 @@
 import { getActiveSession } from "@/app/actions/focus/getActiveSession"
 import { getProjects } from "@/app/actions/project"
 import { getTasks } from "@/app/actions/task"
+import { Calendar } from "@/components/focus/calendar"
 import { SessionCard } from "@/components/focus/session/sessionCard"
 
 const FocusPage = async () => {
@@ -18,8 +19,9 @@ const FocusPage = async () => {
     }
 
     return (
-        <div className="py-6">
+        <div className="pt-6 px-6 h-full flex gap-10 justify-center">
             <SessionCard activeSession={activeSession} />
+            <Calendar />
         </div>
     )
 }
