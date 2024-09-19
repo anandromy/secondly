@@ -22,9 +22,10 @@ model Session {
   endTime   DateTime?
   userId    String
   taskId    String
-  Task      Task      @relation(fields: [taskId], references: [id])
+  Task      Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
   User      User      @relation(fields: [userId], references: [id])
 }
+
 
 model Task {
   id          String    @id @default(uuid())
