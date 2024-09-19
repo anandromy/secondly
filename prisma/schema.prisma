@@ -62,5 +62,5 @@ model CheckListItem {
   name String
   done Boolean
   taskId String
-  task Task @relation(fields: [taskId], references: [id])
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
