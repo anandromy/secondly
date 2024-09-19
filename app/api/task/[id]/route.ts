@@ -45,3 +45,31 @@ export const PUT = async (req: NextRequest, { params }: { params: { id: string }
         }, { status: 500 })
     }
 }
+
+export const DELETE = async (req: Request, { params }: { params: { id: string }}) => {
+    const id = params.id
+    try {
+        await db.task.delete({
+            where: {
+                id: id
+            }
+        })
+        return Response.json({
+            message: "Successfully deleted task",
+            success: true
+        }, { status: 200 })
+    } catch (error) {
+        console.log("Error in delete task route: ", error)
+        if(error instanceof Prisma.PrismaClientKnownRequestError) {
+            return Response.json({
+                message: "Task not found",
+                success: false
+            }, { status: 404 })
+        }
+
+        return Response.json({
+            message: "Some error occured while deleting task",
+            success: false
+        }, { status: 500 })
+    }
+}

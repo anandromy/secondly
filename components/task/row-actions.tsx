@@ -27,6 +27,14 @@ export const DataTableRowActions = <TData,>({ row }: DataTabelRowActionProps<TDa
         console.log("This is the received data: ", data)
     }
 
+    const deleteTask = async (id: string) => {
+        const res = await fetch(`http://localhost:3000/api/task/${id}`, {
+            method: "DELETE"
+        })
+        const data = await res.json()
+        console.log("This is the response of deleting task: ", data)
+    }
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -57,7 +65,9 @@ export const DataTableRowActions = <TData,>({ row }: DataTabelRowActionProps<TDa
                     <EditIcon className="w-4 h-4 mr-2" />See checklist
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem className="cursor-pointer" onClick={async () => {
+                    await deleteTask(row.original.id)
+                }}>
                     <TrashIcon className="w-4 h-4 mr-2" />Delete
                 </DropdownMenuItem>
             </DropdownMenuContent>
