@@ -17,7 +17,7 @@ const TaskPage = async () => {
                     </Link>
                 </Button>
             </div>
-            <DataTable data={tasks} columns={columns} />
+            Here will be the table
         </div>
     )
 }
