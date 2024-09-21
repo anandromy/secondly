@@ -1,6 +1,5 @@
 import { getTasks } from "@/app/actions/task"
-import { columns } from "@/components/task/columns"
-import { DataTable } from "@/components/task/data-table"
+import { TaskTable } from "@/components/task/table"
 import { Button } from "@/components/ui/button"
 import { PlusIcon } from "lucide-react"
 import Link from "next/link"
@@ -17,7 +16,7 @@ const TaskPage = async () => {
                     </Link>
                 </Button>
             </div>
-            Here will be the table
+            <TaskTable defaultData={tasks} />
         </div>
     )
 }

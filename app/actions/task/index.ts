@@ -17,7 +17,8 @@ export const getTasks = async () => {
                     name: true,
                     icon: true
                 }
-            }
+            },
+            CheckList: true
         }
     })
 
