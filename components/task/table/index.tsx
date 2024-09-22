@@ -3,7 +3,8 @@
 import { CheckListItem, Status } from "@prisma/client"
 import { createColumnHelper, useReactTable, getCoreRowModel, flexRender, getFilteredRowModel, ColumnFiltersState } from "@tanstack/react-table"
 import { useState } from "react"
-import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell} from "@/components/ui/table"
+import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell, TableCaption} from "@/components/ui/table"
+import { Filter } from "./filter"
 
 type TaskTableProps = {
     defaultData: TableTaskItem[]
@@ -89,7 +90,8 @@ export const TaskTable = ({ defaultData }: TaskTableProps) => {
 
     return (
         <div className="p-2">
-            <Table>
+            <Filter />
+            <Table className="mt-4">
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
