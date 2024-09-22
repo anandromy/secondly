@@ -1,9 +1,9 @@
 "use client"
 
 import { CheckListItem, Status } from "@prisma/client"
-import { createColumnHelper, useReactTable, getCoreRowModel, flexRender, getFilteredRowModel, ColumnFiltersState } from "@tanstack/react-table"
-import { useState } from "react"
-import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell, TableCaption} from "@/components/ui/table"
+import { createColumnHelper, useReactTable, getCoreRowModel, flexRender, getFilteredRowModel, ColumnFiltersState, FilterFn } from "@tanstack/react-table"
+import { useEffect, useMemo, useState } from "react"
+import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from "@/components/ui/table"
 import { Filter } from "./filter"
 
 type TaskTableProps = {
@@ -25,14 +25,28 @@ export type TableTaskItem = {
 }
 
 const columnHelper = createColumnHelper<TableTaskItem>()
+
+const projectFilterFn: FilterFn<TableTaskItem> = (row, columnId, filterValue: string[]) => {
+    console.log("Project Filter Called:", { rowProjectId: row.original.Project.id, filterValue });
+    if (!filterValue || filterValue.length === 0) return true;
+    const projectId = row.original.Project.id;
+    return filterValue.includes(projectId);
+};
+
 const columns = [
     columnHelper.accessor("name", {
         cell: (info) => info.getValue(),
         header: () => <span>Task Name</span>
     }),
-    columnHelper.accessor("Project.icon", {
+    columnHelper.accessor("Project.id", {
         header: () => <span>Project</span>,
-        cell: (info) => info.getValue()
+        cell: (info) => {
+            const project = info.row.original.Project;
+            return (
+                <span>{project.icon} {project.name}</span>
+            );
+        },
+        filterFn: projectFilterFn
     }),
     columnHelper.group({
         header: "Deadline",
@@ -50,9 +64,9 @@ const columns = [
                 header: "Time",
                 cell: (info) => {
                     const time = info.getValue().toLocaleTimeString()
-                    const [hours, minutes, seconds ] = time.split(":")
+                    const [hours, minutes, seconds] = time.split(":")
                     return (
-                        <span>{`${hours.padStart(2, "0")}: ${minutes.padStart(2, "0")}: ${seconds.padStart(2, "0")}`}</span>
+                        <span>{`${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}:${seconds.padStart(2, "0")}`}</span>
                     )
                 }
             })
@@ -67,30 +81,46 @@ const columns = [
                     {status}
                 </span>
             )
+        },
+        filterFn: (row, columnId, filterValue: Status[]) => {
+            const rowValue = row.getValue(columnId) as Status;
+            return filterValue.length === 0 || filterValue.includes(rowValue);
         }
     }),
 ]
 
 export const TaskTable = ({ defaultData }: TaskTableProps) => {
-    const [ data, setData ] = useState<TableTaskItem[]>(() => [...defaultData])
-    const [ columnFilters, setColumnFilters ] = useState<ColumnFiltersState>([{
-        id: "status",
-        value: "todo"
-    }])
+    const [data, setData] = useState<TableTaskItem[]>(() => [...defaultData])
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+        
+    const filteredData = useMemo(() => {
+        return data.filter(item => {
+            for (const filter of columnFilters) {
+                if (filter.id === "Project.id") {
+                    // @ts-ignore
+                    if (!filter.value.includes(item.Project.id)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        });
+    }, [data, columnFilters]);
+
     const table = useReactTable({
         columns,
-        data,
+        data: filteredData,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         state: {
             columnFilters
         },
-        onColumnFiltersChange: setColumnFilters
+        onColumnFiltersChange: setColumnFilters,
     })
 
     return (
         <div className="p-2">
-            <Filter />
+            <Filter columnFilters={columnFilters} setColumnFilters={setColumnFilters}/>
             <Table className="mt-4">
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
