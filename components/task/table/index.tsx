@@ -1,9 +1,9 @@
 "use client"
 
 import { CheckListItem, Status } from "@prisma/client"
-import { createColumnHelper, useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-table"
+import { createColumnHelper, useReactTable, getCoreRowModel, flexRender, getFilteredRowModel, ColumnFiltersState } from "@tanstack/react-table"
 import { useState } from "react"
-import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell, TableFooter, TableCaption } from "@/components/ui/table"
+import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell} from "@/components/ui/table"
 
 type TaskTableProps = {
     defaultData: TableTaskItem[]
@@ -72,11 +72,19 @@ const columns = [
 
 export const TaskTable = ({ defaultData }: TaskTableProps) => {
     const [ data, setData ] = useState<TableTaskItem[]>(() => [...defaultData])
-
+    const [ columnFilters, setColumnFilters ] = useState<ColumnFiltersState>([{
+        id: "status",
+        value: "todo"
+    }])
     const table = useReactTable({
         columns,
         data,
-        getCoreRowModel: getCoreRowModel()
+        getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        state: {
+            columnFilters
+        },
+        onColumnFiltersChange: setColumnFilters
     })
 
     return (
