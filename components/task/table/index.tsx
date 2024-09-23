@@ -1,10 +1,13 @@
 "use client"
 
 import { CheckListItem, Status } from "@prisma/client"
-import { createColumnHelper, useReactTable, getCoreRowModel, flexRender, getFilteredRowModel, ColumnFiltersState, FilterFn } from "@tanstack/react-table"
-import { useEffect, useMemo, useState } from "react"
+import { createColumnHelper, useReactTable, getCoreRowModel, flexRender, getFilteredRowModel, ColumnFiltersState, FilterFn, getExpandedRowModel, ExpandedState } from "@tanstack/react-table"
+import { useMemo, useState } from "react"
 import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from "@/components/ui/table"
 import { Filter } from "./filter"
+import { ChevronRight, EditIcon, EllipsisIcon, TrashIcon } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 type TaskTableProps = {
     defaultData: TableTaskItem[]
@@ -35,8 +38,22 @@ const projectFilterFn: FilterFn<TableTaskItem> = (row, columnId, filterValue: st
 
 const columns = [
     columnHelper.accessor("name", {
-        cell: (info) => info.getValue(),
-        header: () => <span>Task Name</span>
+        header: () => <span>Task Name</span>,
+        cell: (info) => {
+            return (
+                <div className="flex items-center cursor-pointer gap-3" onClick={() => {
+                    const toggle = info.row.getToggleExpandedHandler();
+                    toggle();
+                }}>
+                    <span className="transition-transform duration-300 ease-in-out" style={{
+                        transform: info.row.getIsExpanded() ? 'rotate(90deg)' : 'rotate(0deg)'
+                    }}>
+                        <ChevronRight className="h-4 w-4" />
+                    </span>
+                    <span>{info.getValue()}</span>
+                </div>
+            )
+        }
     }),
     columnHelper.accessor("Project.id", {
         header: () => <span>Project</span>,
@@ -87,11 +104,34 @@ const columns = [
             return filterValue.length === 0 || filterValue.includes(rowValue);
         }
     }),
+    columnHelper.accessor("id", {
+        header: "",
+        cell: (info) => {
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger>
+                        <EllipsisIcon className="h-4 w-4" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem className="cursor-pointer">
+                            <TrashIcon className="h-4 w-4 mr-2" />
+                            <span>Delete task</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer">
+                            <EditIcon className="h-4 w-4 mr-2" />
+                            <span>Edit task</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )
+        }
+    })
 ]
 
 export const TaskTable = ({ defaultData }: TaskTableProps) => {
-    const [data, setData] = useState<TableTaskItem[]>(() => [...defaultData])
+    const [ data, setData ] = useState<TableTaskItem[]>(() => [...defaultData])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+    const [ expanded, setExpanded ] = useState<ExpandedState>({})
         
     const filteredData = useMemo(() => {
         return data.filter(item => {
@@ -110,12 +150,16 @@ export const TaskTable = ({ defaultData }: TaskTableProps) => {
     const table = useReactTable({
         columns,
         data: filteredData,
+        getRowCanExpand: (row) => true,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         state: {
-            columnFilters
+            columnFilters,
+            expanded: expanded
         },
         onColumnFiltersChange: setColumnFilters,
+        getExpandedRowModel: getExpandedRowModel(),
+        onExpandedChange: setExpanded
     })
 
     return (
@@ -140,16 +184,59 @@ export const TaskTable = ({ defaultData }: TaskTableProps) => {
                 </TableHeader>
                 <TableBody>
                     {table.getRowModel().rows.map((row) => (
-                        <TableRow key={row.id}>
-                            {row.getVisibleCells().map((cell) => (
-                                <TableCell key={cell.id}>
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                </TableCell>
-                            ))}
-                        </TableRow>
+                        <>
+                            <TableRow key={row.id} className="transition-all duration-1000">
+                                {row.getVisibleCells().map((cell) => (
+                                    <TableCell key={cell.id}>
+                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                            {row.getIsExpanded() && (
+                                <TableRow>
+                                    <CheckList items={row.original.CheckList} />
+                                </TableRow>
+                            )}
+                        </>
                     ))}
                 </TableBody>
             </Table>
         </div>
     )
 }
+
+
+const CheckList = ({ items }: { items: CheckListItem[] }) => {
+    const [checklistItems, setChecklistItems] = useState(items);
+
+    const handleToggle = (id: string) => {
+        setChecklistItems(prevItems =>
+            prevItems.map(item =>
+                item.id === id ? { ...item, done: !item.done } : item
+            )
+        );
+    };
+
+    return (
+        <div className="p-4 bg-gray-50">
+            <h3 className="text-lg font-semibold mb-2">Checklist</h3>
+            <ul className="space-y-2">
+                {checklistItems.map(item => (
+                    <li key={item.id} className="flex items-center space-x-2">
+                        <Checkbox
+                            checked={item.done}
+                            onCheckedChange={() => handleToggle(item.id)}
+                            id={item.id}
+                        />
+                        <label
+                            htmlFor={item.id}
+                            className={`cursor-pointer ${item.done ? 'line-through text-gray-500' : ''}`}
+                        >
+                            {item.name}
+                        </label>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
